@@ -1,0 +1,4 @@
+%{
+  "exjsonpath": {:hex, :exjsonpath, "0.9.0", "87e593eb0deb53aa0688ca9f9edc9fb3456aca83c82245f83201ea04d696feba", [:mix], [], "hexpm", "8d7a8e9ba784e1f7a67c6f1074a3ac91a3a79a45969514ee5d95cea5bf749627"},
+  "jason": {:hex, :jason, "1.2.2", "ba43e3f2709fd1aa1dce90aaabfd039d000469c05c56f0b8e31978e03fa39052", [:mix], [{:decimal, "~> 1.0 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "18a228f5f0058ee183f29f9eae0805c6e59d61c3b006760668d8d18ff0d12179"},
+}

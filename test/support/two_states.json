@@ -1,0 +1,25 @@
+{
+  "Comment": "A simple two states machine",
+  "StartAt": "A",
+  "States": {
+    "A": {
+      "Type": "Task",
+      "Resource": "elixir:StatexTest:add",
+      "Parameters": {
+        "X.$": "$.numbers[0]",
+        "Y.$": "$.numbers[1]"
+      },
+      "ResultPath": "$.SOMEKEY.sum",
+      "Next": "B"
+    },
+    "B": {
+      "Type": "Task",
+      "Resource": "elixir:StatexTest:add",
+      "Parameters": {
+        "X.$": "$.numbers[0]",
+        "Y.$": "$.SOMEKEY.sum"
+      },
+      "End": true
+    }
+  }
+}
