@@ -1,0 +1,50 @@
+{
+  "Comment": "Pass state example",
+  "StartAt": "DispatchEvent",
+  "States": {
+    "ValueInTwenties": {
+      "Type": "Pass",
+      "Result": "OK",
+      "End": true
+    },
+    "DispatchEvent": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Not": {
+            "Variable": "$.type",
+            "StringEquals": "Private"
+          },
+          "Next": "Public"
+        },
+        {
+          "And": [
+            {
+              "Variable": "$.value",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.value",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.value",
+              "NumericGreaterThanEquals": 20
+            },
+            {
+              "Variable": "$.value",
+              "NumericLessThan": 30
+            }
+          ],
+          "Next": "ValueInTwenties"
+        },
+        {
+          "Variable": "$.rating",
+          "NumericGreaterThanPath": "$.auditThreshold",
+          "Next": "StartAudit"
+        }
+      ],
+      "Default": "RecordEvent"
+    }
+  }
+}

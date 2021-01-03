@@ -11,27 +11,27 @@ defmodule StatexTest do
   end
 
   test "filter_path" do
-    assert 42 == Statex.Machine.filter_path(%{"X" => 1, "Y" => 42}, "$.Y")
+    assert %{"Input" => 42} == Statex.Machine.filter_path(%{"Input" => %{"X" => 1, "Y" => 42}}, "Input", "$.Y")
   end
 
   test "filter_path nested" do
-    assert 42 == Statex.Machine.filter_path(%{"X" => 1, "Y" => %{"Z" => 42}}, "$.Y.Z")
+    assert %{"Input" => 42} == Statex.Machine.filter_path(%{"Input" => %{"X" => 1, "Y" => %{"Z" => 42}}}, "Input", "$.Y.Z")
   end
 
   test "filter_template" do
-    input = %{"X" => 1, "Y" => %{"Z" => 42}}
+    state = %{"Input" => %{"X" => 1, "Y" => %{"Z" => 42}}}
 
     template = %{
       "A.$" => "$.X",
       "B.$" => "$.Y.Z"
     }
 
-    result = %{
+    result = %{"Input" => %{
       "A" => 1,
       "B" => 42
-    }
+    }}
 
-    assert result == Statex.Machine.filter_template(input, template)
+    assert result == Statex.Machine.filter_template(state, "Input", template)
   end
 
   test "hello world machine" do
@@ -64,6 +64,24 @@ defmodule StatexTest do
     assert_raise Statex.Error.UndefinedState, fn ->
       Statex.Machine.start(machine_def, input)
     end
+  end
+
+  test "choices state" do
+    {:ok, machine_def } = Statex.load_file("./test/support/choices_state.json")
+    input = %{
+      "type" => "Private",
+      "value" => 22
+    }
+    assert "OK" == Statex.Machine.start(machine_def, input)
+  end
+
+  test "choices state no match" do
+    {:ok, machine_def } = Statex.load_file("./test/support/choices_state_no_match.json")
+    input = %{
+      "type" => "Private",
+      "value" => 22
+    }
+    assert "KO" == Statex.Machine.start(machine_def, input)
   end
 
 end
