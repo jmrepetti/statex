@@ -1,0 +1,10 @@
+{
+  "Comment": "Pass state example",
+  "StartAt": "No-op",
+  "States": {
+    "No-op": {
+      "Type": "Pass",
+      "Next": "Undefined"
+    }
+  }
+}

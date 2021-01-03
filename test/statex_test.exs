@@ -44,4 +44,12 @@ defmodule StatexTest do
     assert 4 == Statex.Machine.start(machine_def, %{"numbers" => [1, 2], "SOMEKEY" => %{}})
   end
 
+  test "undefined state" do
+    {:ok, machine_def } = Statex.load_file("./test/support/undefined_state.json")
+    input = %{}
+    assert_raise Statex.Error.UndefinedState, fn ->
+      Statex.Machine.start(machine_def, input)
+    end
+  end
+
 end

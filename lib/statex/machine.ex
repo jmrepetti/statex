@@ -7,6 +7,13 @@ defmodule Statex.Machine do
     input
   end
 
+  def enter_state(input, state, machine) do
+    case machine["States"][state] do
+      nil -> raise Statex.Error.UndefinedState, message: "undefined state: #{state}"
+      state_definition -> handle_state(input, state_definition, machine)
+    end
+  end
+
   def transition(input, state, machine) do
     cond do
       state["End"] -> input
