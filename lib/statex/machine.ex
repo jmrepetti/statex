@@ -21,13 +21,11 @@ defmodule Statex.Machine do
     end
   end
 
-  def enter_state(input, state, machine) do
-    handle_state(input, machine["States"][state], machine)
-  end
 
   def handle_state(input, state, machine) do
     case state["Type"] do
-      "Task" -> handle_task(state, machine, input)
+      "Task" -> handle_task_state(state, machine, input)
+      "Pass" -> handle_pass_state(state, machine, input)
       _ -> "no f idea"
     end
   end
@@ -35,7 +33,7 @@ defmodule Statex.Machine do
   # InputPath |> Parameters |> effective input
   # ResultSelector |>  effective result
   # ResultPath |> OutputPath |> effective output
-  def handle_task(state, machine, input) do
+  def handle_task_state(state, machine, input) do
       input
       |> filter_path(state["InputPath"]) #
       |> filter_template(state["Parameters"]) # Pass selected data from input
@@ -46,6 +44,23 @@ defmodule Statex.Machine do
       |> transition(state, machine)
   end
 
+  def handle_pass_state(state, machine, input) do
+      input
+      |> override_result(state) #
+      |> filter_path(state["InputPath"]) #
+      |> filter_template(state["Parameters"]) # Pass selected data from input
+      |> result_path(input, state["ResultPath"]) # insert result into input body
+      |> filter_path(state["OutputPath"]) # Pass selected data to next state
+      |> transition(state, machine)
+  end
+
+  # Pass state can override result (maybe testing purposes)
+  def override_result(input, state) do
+    case state["Result"] do
+      nil -> input
+      fixed_result -> fixed_result
+    end
+  end
 
   def filter_path(input, nil) do
     input
@@ -82,6 +97,10 @@ defmodule Statex.Machine do
       |> String.replace_prefix("$.", "")
       |> String.split(".")
     put_in(raw_input, path_list, result)
+  end
+
+  def handle_resource(input, nil) do
+    input
   end
 
   def handle_resource(input, resource) do
