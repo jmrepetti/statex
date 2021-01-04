@@ -31,6 +31,7 @@ defmodule Statex.Machine do
       "Task" -> handle_task_state(state)
       "Pass" -> handle_pass_state(state)
       "Choice" -> handle_choices_state(state)
+      "Wait" -> handle_wait_state(state)
       _ -> "no f idea"
     end
   end
@@ -60,6 +61,26 @@ defmodule Statex.Machine do
 
   def handle_pass_state(state) do
     state
+  end
+
+  def handle_wait_state(state) do
+    cond do
+      state["Seconds"] -> wait_seconds(state["Seconds"])
+      state["SecondsPath"] ->
+        wait_seconds(1)
+      state["Timestamp"] -> wait_until(state["Timestamp"])
+      state["TimestampPath"] ->
+        wait_until(1)
+    end
+    state
+  end
+
+  def wait_seconds(seconds) do
+    Process.sleep(seconds * 1000)
+  end
+
+  def wait_until(timestamp) do
+    timestamp
   end
 
   def filter_path(state, _key, nil) do

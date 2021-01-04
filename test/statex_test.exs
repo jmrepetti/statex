@@ -84,4 +84,13 @@ defmodule StatexTest do
     assert "KO" == Statex.Machine.start(machine_def, input)
   end
 
+  # Happy test
+  test "wait state seconds" do
+    start_time = DateTime.utc_now
+    {:ok, machine_def } = Statex.load_file("./test/support/wait_state_seconds.json")
+    assert "OK" == Statex.Machine.start(machine_def, %{})
+    end_time = DateTime.utc_now
+    assert DateTime.diff(end_time, start_time) == 1
+  end
+
 end

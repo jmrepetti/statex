@@ -1,0 +1,17 @@
+{
+  "Comment": "Wait state seconds",
+  "StartAt": "wait_ten_seconds",
+  "States": {
+    "wait_ten_seconds" : {
+      "Type" : "Wait",
+      "Seconds" : 1,
+      "Next": "NextState"
+    },
+    "NextState" : {
+      "Type" : "Pass",
+      "Result" : "OK",
+      "End": true
+    }
+  }
+}
+
