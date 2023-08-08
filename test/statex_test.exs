@@ -44,8 +44,8 @@ defmodule StatexTest do
     assert 4 == Statex.Machine.start(machine_def, %{"numbers" => [1, 2], "SOMEKEY" => %{}})
   end
 
-  test "pass state" do
-    {:ok, machine_def } = Statex.load_file("./test/support/pass_state.json")
+  test "pass state fixed result" do
+    {:ok, machine_def } = Statex.load_file("./test/support/pass_state_fixed_result.json")
     input = %{"georefOf" => "Home"}
     spec_output = %{
       "georefOf" => "Home",
@@ -56,6 +56,20 @@ defmodule StatexTest do
     }
     output = Statex.Machine.start(machine_def, input)
     assert spec_output == output
+  end
+
+  test "pass state" do
+    {:ok, machine_def } = Statex.load_file("./test/support/pass_state.json")
+    input = %{"georefOf" => "Home"}
+    output = Statex.Machine.start(machine_def, input)
+    assert input == output
+  end
+
+  test "success state" do
+    {:ok, machine_def } = Statex.load_file("./test/support/success_state.json")
+    input = %{"Hello" => "World"}
+    output = Statex.Machine.start(machine_def, input)
+    assert input == output
   end
 
   test "undefined state" do

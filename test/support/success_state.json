@@ -1,0 +1,9 @@
+{
+  "Comment": "Pass state example",
+  "StartAt": "SuccessState",
+  "States": {
+    "SuccessState": {
+      "Type": "Succeed"
+    }
+  }
+}

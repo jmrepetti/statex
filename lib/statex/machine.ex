@@ -23,6 +23,7 @@ defmodule Statex.Machine do
     cond do
       state["End"] -> state["Result"]
       state["Next"] -> enter_state(state["Next"], state["Result"], machine)
+      true -> state["Result"]
     end
   end
 
@@ -32,6 +33,7 @@ defmodule Statex.Machine do
       "Pass" -> handle_pass_state(state)
       "Choice" -> handle_choices_state(state)
       "Wait" -> handle_wait_state(state)
+      "Succeed" -> handle_success_state(state)
       _ -> "no f idea"
     end
   end
@@ -60,27 +62,40 @@ defmodule Statex.Machine do
   end
 
   def handle_pass_state(state) do
+    Map.put(state, "Result", state["Input"])
+  end
+
+  # TODO: seems similar to pass_state
+  def handle_success_state(state) do
     state
+    |> handle_pass_state
+    # |> Map.put("End", true)
   end
 
   def handle_wait_state(state) do
     cond do
       state["Seconds"] -> wait_seconds(state["Seconds"])
       state["SecondsPath"] ->
-        wait_seconds(1)
+        value_from_path(state["Input"], state["SecondsPath"])
+        |> wait_seconds
       state["Timestamp"] -> wait_until(state["Timestamp"])
       state["TimestampPath"] ->
-        wait_until(1)
+        value_from_path(state["Input"], state["TimestampPath"])
+        |> wait_until
     end
     state
   end
 
+  # TODO: wait_seconds and wait_until should be handled differently, maybe in backgraound by an Agent, spawning a Task a global scheduler
+  # This is temporarily
   def wait_seconds(seconds) do
     Process.sleep(seconds * 1000)
   end
 
   def wait_until(timestamp) do
-    timestamp
+    wait_until_value = DateTimeParser.parse_datetime(timestamp)
+    end_time = DateTime.utc_now
+    wait_seconds(DateTime.diff(end_time, wait_until_value))
   end
 
   def filter_path(state, _key, nil) do
