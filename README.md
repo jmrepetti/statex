@@ -1,6 +1,9 @@
-# Statex
+# Statex (NSFW) 
 
 Elixir state machine based on [Amazon States Language](https://states-language.net/spec.html)
+
+Not realated with the JS library.
+
 
 ## Installation
 
